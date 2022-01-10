@@ -104,7 +104,7 @@ bool AnimationsController::isExpired(long currTime, Item const& item) const
     return isExpired(currTime, item.duration, item.startTime, item.totalRepeats);
 }
 
-// Assumes the index is valid and the container is not empty
+// Assumes the index is valid
 void AnimationsController::removeByIndex(int idx)
 {
     delete mAnimations[idx].animation;

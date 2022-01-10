@@ -45,3 +45,18 @@ void BecomeEmptyVibroAnimation::perform(long currTime, long totalTime, int repea
 
     mVibro.speed(speed);
 }
+
+
+VibroAnimation::~VibroAnimation()
+{
+    mVibro.speed(0);
+}
+
+void VibroAnimation::perform(long currTime, long totalTime, int repeatCount) const
+{
+    auto speed = map(currTime, 0, totalTime, mFrom, mTo);
+    mVibro.speed(speed);
+}
+
+
+

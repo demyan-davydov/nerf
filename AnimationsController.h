@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Animation.h"
+#include "SimpleArray.h"
 
 // Usage:
 // AnimationsController animCtrl;
@@ -82,7 +83,7 @@ private:
         long startTime = 0; // nanoseconds
         int totalRepeats = 0; // -1 means infinite
 
-        Animation* animation;
+        Animation* animation = nullptr;
     };
 
     static bool invalidParameters(long startTimeUs, long durationUs, Animation* anim, int totalRepeats);
@@ -100,6 +101,7 @@ private:
     bool addWithId(int aId, long startTimeUs, long durationMs, Animation* anim, int totalRepeats);
 
 private:
+    //SimpleArray<Item, kMaxAnimations> mAnimations;
     Item mAnimations[kMaxAnimations];
     int mAnimationsSize = 0;
     int mLastId = InvalidId; // Id (not unique) for animation

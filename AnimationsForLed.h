@@ -27,24 +27,36 @@ public:
     void perform(long currTime, long totalTime, int repeatCount) const override;
 };
 
-class FadeOnLedAnimation : public Animation
+class FadeLedAnimation : public Animation
 {
     RgbLed& mLed;
-    ColorRgb mColor;
+    ColorRgb mFrom;
+    ColorRgb mTo;
 
 public:
-    FadeOnLedAnimation(RgbLed& led, ColorRgb const& color) : mLed(led), mColor(color) {}
+    FadeLedAnimation(RgbLed& led, ColorRgb const& from, ColorRgb const& to) : mLed(led), mFrom(from), mTo(to) {}
 
     void perform(long currTime, long totalTime, int repeatCount) const override;
 };
 
-class FadeOffLedAnimation : public Animation
+class FadeInLedAnimation : public Animation
 {
     RgbLed& mLed;
     ColorRgb mColor;
 
 public:
-    FadeOffLedAnimation(RgbLed& led, ColorRgb const& color) : mLed(led), mColor(color) {}
+    FadeInLedAnimation(RgbLed& led, ColorRgb const& color) : mLed(led), mColor(color) {}
+
+    void perform(long currTime, long totalTime, int repeatCount) const override;
+};
+
+class FadeOutLedAnimation : public Animation
+{
+    RgbLed& mLed;
+    ColorRgb mColor;
+
+public:
+    FadeOutLedAnimation(RgbLed& led, ColorRgb const& color) : mLed(led), mColor(color) {}
 
     void perform(long currTime, long totalTime, int repeatCount) const override;
 };

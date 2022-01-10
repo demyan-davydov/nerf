@@ -20,7 +20,16 @@ void BecomeEmptyLedAnimation::perform(long currTime, long totalTime, int repeatC
     mLed.color(y, 0, 0);
 }
 
-void FadeOnLedAnimation::perform(long currTime, long totalTime, int repeatCount) const
+void FadeLedAnimation::perform(long currTime, long totalTime, int repeatCount) const
+{
+    const auto r = map(currTime, 0, totalTime, mFrom.r, mTo.r);
+    const auto g = map(currTime, 0, totalTime, mFrom.g, mTo.g);
+    const auto b = map(currTime, 0, totalTime, mFrom.b, mTo.b);
+
+    mLed.color(r, g, b);
+}
+
+void FadeInLedAnimation::perform(long currTime, long totalTime, int repeatCount) const
 {
     const auto r = map(currTime, totalTime, mColor.r);
     const auto g = map(currTime, totalTime, mColor.g);
@@ -29,7 +38,7 @@ void FadeOnLedAnimation::perform(long currTime, long totalTime, int repeatCount)
     mLed.color(r, g, b);
 }
 
-void FadeOffLedAnimation::perform(long currTime, long totalTime, int repeatCount) const
+void FadeOutLedAnimation::perform(long currTime, long totalTime, int repeatCount) const
 {
     const auto r = map(currTime, 0, totalTime, mColor.r, 0);
     const auto g = map(currTime, 0, totalTime, mColor.g, 0);
