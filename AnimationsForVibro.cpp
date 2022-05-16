@@ -5,7 +5,6 @@
 #include "utils.h"
 
 
-
 void BecomeFullVibroAnimation::perform(long currTime, long totalTime, int repeatCount) const
 {
     if (currTime == totalTime)
@@ -57,6 +56,3 @@ void VibroAnimation::perform(long currTime, long totalTime, int repeatCount) con
     auto speed = map(currTime, 0, totalTime, mFrom, mTo);
     mVibro.speed(speed);
 }
-
-
-

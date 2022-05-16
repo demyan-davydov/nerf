@@ -114,22 +114,7 @@ bool AnimationsController::isExpired(long currTime, Item const& item) const
     return isExpired(currTime, item.duration, item.startTime, item.totalRepeats);
 }
 
-/*
-// Assumes the index is valid
-void AnimationsController::removeByIndex(int idx)
-{
-    delete mAnimations[idx].animation;
-
-    --mAnimationsSize;
-
-    if (idx != mAnimationsSize) // is not the last element
-    {
-        // move last element instead removed
-        mAnimations[idx] = mAnimations[mAnimationsSize];
-    }
-}
-*/
-
+// Creates a new Id for animation
 int AnimationsController::popNextId()
 {
     auto aId = mLastId++;
@@ -148,15 +133,6 @@ bool AnimationsController::addWithId(int animId, long startTimeUs, long duration
         delete animation;
         return false;
     }
-
-    /*auto& item = mAnimations[mAnimationsSize++];
-
-    item.animId = animId;
-    item.duration = durationUs;
-    item.startTime = startTimeUs;
-    item.totalRepeats = totalRepeats;
-    item.animation = animation;
-    */
 
     Item item;
     item.animId = animId;
@@ -202,4 +178,3 @@ int AnimationsController::Adder::animId() const
 {
     return bulkAnimId;
 }
-

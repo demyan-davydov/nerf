@@ -35,21 +35,21 @@ public:
     //! @returns true if nave no scheduled animations
     bool empty() const;
 
-    //! @brief Process all the animations
-    //! Automatically removes all the expired animations
-    void process(long currTimeUs);    
+    //! @brief Handles all animations
+    //! Automatically removes all expired animations
+    void process(long currTimeUs);
 
     //! @brief Add one animation
-    //! @returns 
+    //! @returns AnimationId
     int add(long startTimeUs, long durationMs, Animation* anim, int totalRepeats = 1);
 
-    //! @brief Removes all the animations with specified 'animId'
+    //! @brief Removes all animations with specified 'animId'
     bool remove(int animId);
 
-    //! @brief Removes all the animations
+    //! @brief Removes all animations
     void clear();
 
-    //! @brief Helper class to add fiew animations
+    //! @brief Helper class for adding few animations
     struct Adder 
     {
     public:
@@ -98,16 +98,12 @@ private:
 
     bool isExpired(long currTime, Item const&) const;
 
-    //void removeByIndex(int idx);
-
     int popNextId();
 
     bool addWithId(int aId, long startTimeUs, long durationMs, Animation* anim, int totalRepeats);
 
 private:
     SimpleArray<Item, kMaxAnimations> mAnimations;
-    //Item mAnimations[kMaxAnimations];
-    //int mAnimationsSize = 0;
     int mLastId = InvalidId; // Id (not unique) for animation
     int mLastOrder = 0;
 };

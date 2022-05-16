@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 
-// katonde driven Pin
+// katode driven Pin
 class DrivenByMinus
 {
     DrivenByMinus();
