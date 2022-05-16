@@ -9,7 +9,7 @@
 
 RgbLed led(5, 6, 9);
 Vibro vibro(3);
-Switcher switcher(8);
+Switcher switcher(8, 200);
 AnimationsController animations;
 
 //long currTime = micros();
@@ -48,11 +48,12 @@ void loop()
         {
             //const auto vibroTime = currTime + 300 * 1000; // vibro since 300ms
 
-            animations.since(currTime + 300 * 1000)
+            animations.since(currTime + 150 * 1000)
                 .add(300, new VibroAnimation(vibro, 255)).pause(50)
-                .add(200, new VibroAnimation(vibro, 127)).pause(100)
                 .add(200, new VibroAnimation(vibro, 127))
-                .add(10, new VibroAnimation(vibro, 0));
+                .add(50, new VibroAnimation(vibro, 0))
+                .add(200, new VibroAnimation(vibro, 127))
+                .add(0, new VibroAnimation(vibro, 0));
             
             //animations.add(vibroTime, 200, new BecomeEmptyVibroAnimation(vibro), 4);
 

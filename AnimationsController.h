@@ -78,7 +78,11 @@ public:
 private:
     struct Item
     {
-        int animId = InvalidId; // unique animation id
+        Item() = default;
+        Item(Item const&) = default;
+        Item& operator=(Item const&) = default;
+
+        int animId = InvalidId; // non unique animation id
         long duration = 0; // nanoseconds 
         long startTime = 0; // nanoseconds
         int totalRepeats = 0; // -1 means infinite
@@ -94,15 +98,16 @@ private:
 
     bool isExpired(long currTime, Item const&) const;
 
-    void removeByIndex(int idx);
+    //void removeByIndex(int idx);
 
     int popNextId();
 
     bool addWithId(int aId, long startTimeUs, long durationMs, Animation* anim, int totalRepeats);
 
 private:
-    //SimpleArray<Item, kMaxAnimations> mAnimations;
-    Item mAnimations[kMaxAnimations];
-    int mAnimationsSize = 0;
+    SimpleArray<Item, kMaxAnimations> mAnimations;
+    //Item mAnimations[kMaxAnimations];
+    //int mAnimationsSize = 0;
     int mLastId = InvalidId; // Id (not unique) for animation
+    int mLastOrder = 0;
 };

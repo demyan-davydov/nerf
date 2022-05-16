@@ -1,5 +1,8 @@
 #pragma once
 
+#include "utils.h"
+
+#include <stdlib.h>
 
 template<typename Item, int kMaxSize>
 class SimpleArray final
@@ -71,7 +74,10 @@ public:
     {
         if (available())
         {
-            new (pItem(mSize++)) Item(item);
+            new (pItem(mSize++)) Item{item};
+            //Item* p = new (pItem(mSize++)) Item;
+            //*p = item;
+
             return true;
         }
 
@@ -105,6 +111,35 @@ public:
         }
     }
 
+    template<typename TFnObj>
+    void eraseIf(TFnObj const& fnObj)
+    {
+        int i = 0; // destination index
+        for (; i < mSize; ++i)
+        {
+            if (fnObj(*pItem(i)))
+                break;
+        }
+
+        for (int j = i + 1; j < mSize; ++j)
+        {
+            if (fnObj(*pItem(j)))
+                continue;
+
+            *pItem(i++) = *pItem(j);
+        }
+
+        const int newSize = i;
+
+        // call d'tor for removed elements
+        for (; i < mSize; ++i)
+        {
+            pItem(i)->~Item();
+        }
+
+        mSize = newSize;
+    }
+
     Item& operator[](int index) { return *pItem(index); }
     Item const& operator[](int index) const { return *pItem(index); }
 
@@ -123,9 +158,18 @@ public:
     Item& back() { return *pItem(mSize-1); }
     Item const& back() const { return *pItem(mSize-1); }
 
+
+    //typedef int (*SortFn)(const Item&, const Item&);
+    typedef int (*SortFn)(const void* item1, const void* item2);
+
+    void sort(SortFn sortFn)
+    {
+        ::qsort(mData, mSize, kItemAlignedSize, sortFn);
+    }
+
 private:
-    Item*       pItem(int idx)       { return reinterpret_cast<Item*>(mData[idx * kItemAlignedSize]); }
-    Item const* pItem(int idx) const { return reinterpret_cast<Item const*>(mData[idx * kItemAlignedSize]); }
+    Item*       pItem(int idx)       { return reinterpret_cast<Item*>(&mData[idx * kItemAlignedSize]); }
+    Item const* pItem(int idx) const { return reinterpret_cast<Item const*>(&mData[idx * kItemAlignedSize]); }
 
 private:
     char mData[kMaxSize * kItemAlignedSize];

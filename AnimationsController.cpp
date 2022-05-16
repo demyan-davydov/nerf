@@ -1,6 +1,5 @@
 #include "AnimationsController.h"
 
-
 AnimationsController::~AnimationsController()
 {
     clear();
@@ -8,12 +7,12 @@ AnimationsController::~AnimationsController()
 
 bool AnimationsController::empty() const
 {
-    return mAnimationsSize == 0;
+    return mAnimations.empty();
 }
 
 void AnimationsController::process(long currTimeUs)
 {
-    for (int i = 0; i < mAnimationsSize; ++i)
+    for (int i = 0; i < mAnimations.size(); ++i)
     {
         const auto& item = mAnimations[i];
 
@@ -23,7 +22,10 @@ void AnimationsController::process(long currTimeUs)
             {
                 // final execution
                 item.animation->perform(item.duration, item.duration, item.totalRepeats - 1);
-                removeByIndex(i--);
+                //removeByIndex(i--);
+
+                delete item.animation;
+                mAnimations.erase(i--);
             }
             else 
             {
@@ -47,26 +49,34 @@ bool AnimationsController::remove(int animId)
 {
     // linear search, yeah!
 
-    for (int i = 0; i < mAnimationsSize; ++i)
+    for (int i = 0; i < mAnimations.size(); ++i)
     {
         if (mAnimations[i].animId == animId)
         {
-            removeByIndex(i--);
+            delete mAnimations[i].animation;
         }
     }
+
+    struct HaveId
+    {
+        int animId;
+        HaveId(int animId) : animId(animId) {}
+        bool operator()(Item const& item) const { return item.animId == animId; }
+    };
+
+    mAnimations.eraseIf(HaveId(animId));
 
     return true;
 }
 
 void AnimationsController::clear()
 {
-    for (int i = 0; i < mAnimationsSize; ++i)
+    for (int i = 0; i < mAnimations.size(); ++i)
     {
-        auto& a = mAnimations[i];
-        delete a.animation;
+        delete mAnimations[i].animation;
     }
 
-    mAnimationsSize = 0;
+    mAnimations.clear();
 }
 
 AnimationsController::Adder AnimationsController::since(long startTimeUs)
@@ -85,7 +95,7 @@ bool AnimationsController::invalidParameters(long startTime, long durationUs, An
 
 bool AnimationsController::canAppend(long startTimeUs, long durationUs, Animation* anim, int totalRepeats) const
 {
-    return mAnimationsSize < kMaxAnimations && !invalidParameters(startTimeUs, durationUs, anim, totalRepeats);
+    return mAnimations.available() && !invalidParameters(startTimeUs, durationUs, anim, totalRepeats);
 }
 
 bool AnimationsController::isExpired(long currTime, long durationUs, long startTime, int totalRepeats) const
@@ -104,6 +114,7 @@ bool AnimationsController::isExpired(long currTime, Item const& item) const
     return isExpired(currTime, item.duration, item.startTime, item.totalRepeats);
 }
 
+/*
 // Assumes the index is valid
 void AnimationsController::removeByIndex(int idx)
 {
@@ -117,6 +128,7 @@ void AnimationsController::removeByIndex(int idx)
         mAnimations[idx] = mAnimations[mAnimationsSize];
     }
 }
+*/
 
 int AnimationsController::popNextId()
 {
@@ -129,21 +141,31 @@ int AnimationsController::popNextId()
     return aId;
 }
 
-bool AnimationsController::addWithId(int aId, long startTimeUs, long durationUs, Animation* anim, int totalRepeats)
+bool AnimationsController::addWithId(int animId, long startTimeUs, long durationUs, Animation* animation, int totalRepeats)
 {
-    if (!canAppend(startTimeUs, durationUs, anim, totalRepeats))
+    if (!canAppend(startTimeUs, durationUs, animation, totalRepeats))
     {
-        delete anim;
+        delete animation;
         return false;
     }
 
-    auto& item = mAnimations[mAnimationsSize++];
+    /*auto& item = mAnimations[mAnimationsSize++];
 
-    item.animId = aId;
+    item.animId = animId;
     item.duration = durationUs;
     item.startTime = startTimeUs;
     item.totalRepeats = totalRepeats;
-    item.animation = anim;
+    item.animation = animation;
+    */
+
+    Item item;
+    item.animId = animId;
+    item.duration = durationUs;
+    item.startTime = startTimeUs;
+    item.totalRepeats = totalRepeats;
+    item.animation = animation;
+
+    mAnimations.push_back(item);
 
     return true;
 }

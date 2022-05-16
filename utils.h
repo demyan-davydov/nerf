@@ -2,6 +2,9 @@
 
 #include "Arduino.h" // map()
 
+// placement new
+inline void * operator new (size_t size, void * ptr) { return ptr; }
+
 //! @returns a * b / c
 inline long mulDiv(long a, long b, long c)
 {
